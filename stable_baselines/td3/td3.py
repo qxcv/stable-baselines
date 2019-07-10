@@ -319,8 +319,8 @@ class TD3(OffPolicyRLModel):
                     rescaled_action = action = self.env.action_space.sample()
                 else:
                     action = self.policy_tf.step(obs[None]).flatten()
-                    # Add noise to the action (improve exploration,
-                    # not needed in general)
+                    # Add noise to the action, as the policy
+                    # is deterministic, this is required for exploration
                     if self.action_noise is not None:
                         action = np.clip(action + self.action_noise(), -1, 1)
                     # Rescale from [-1, 1] to the correct bounds
