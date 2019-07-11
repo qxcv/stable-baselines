@@ -144,7 +144,7 @@ You can easily define a custom architecture for the policy network:
   # Custom MLP policy with two layers
   class CustomTD3Policy(FeedForwardPolicy):
       def __init__(self, *args, **kwargs):
-          super(CustomPolicy, self).__init__(*args, **kwargs,
+          super(CustomTD3Policy, self).__init__(*args, **kwargs,
                                              layers=[400, 300],
                                              layer_norm=False,
                                              feature_extraction="mlp")
