@@ -1043,8 +1043,8 @@ class DDPG(OffPolicyRLModel):
 
         return actions, None
 
-    def action_probability(self, observation, state=None, mask=None, actions=None):
-        observation = np.array(observation)
+    def action_probability(self, observation, state=None, mask=None, actions=None, logp=False):
+        _ = np.array(observation)
 
         if actions is not None:
             raise ValueError("Error: DDPG does not have action probabilities.")

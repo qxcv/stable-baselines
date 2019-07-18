@@ -411,7 +411,7 @@ class TD3(OffPolicyRLModel):
                     infos_values = []
             return self
 
-    def action_probability(self, observation, state=None, mask=None, actions=None):
+    def action_probability(self, observation, state=None, mask=None, actions=None, logp=False):
         _ = np.array(observation)
 
         if actions is not None:
