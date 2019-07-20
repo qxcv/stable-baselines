@@ -11,7 +11,7 @@ class VecFrameStack(VecEnvWrapper):
     :param venv: (VecEnv) the vectorized environment to wrap
     :param n_stack: (int) Number of frames to stack
     """
-    
+
     def __init__(self, venv, n_stack):
         self.venv = venv
         self.n_stack = n_stack
@@ -24,9 +24,14 @@ class VecFrameStack(VecEnvWrapper):
 
     def step_wait(self):
         observations, rewards, dones, infos = self.venv.step_wait()
-        self.stackedobs = np.roll(self.stackedobs, shift=-observations.shape[-1], axis=-1)
+        last_ax_size = observations.shape[-1]
+        self.stackedobs = np.roll(self.stackedobs, shift=-last_ax_size, axis=-1)
         for i, done in enumerate(dones):
             if done:
+                old_terminal = infos[i]['terminal_observation']
+                new_terminal = np.concatenate(
+                    (self.stackedobs[i, ..., :-last_ax_size], old_terminal), axis=-1)
+                infos[i]['terminal_observation'] = new_terminal
                 self.stackedobs[i] = 0
         self.stackedobs[..., -observations.shape[-1]:] = observations
         return self.stackedobs, rewards, dones, infos
