@@ -37,7 +37,7 @@ class VecFrameStack(VecEnvWrapper):
                     infos[i]['terminal_observation'] = new_terminal
                 else:
                     warnings.warn(
-                        "VecFrameStack wrapping a vecenv without terminal_observation info")
+                        "VecFrameStack wrapping a VecEnv without terminal_observation info")
                 self.stackedobs[i] = 0
         self.stackedobs[..., -observations.shape[-1]:] = observations
         return self.stackedobs, rewards, dones, infos
