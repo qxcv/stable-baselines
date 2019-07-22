@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from gym import spaces
 
@@ -28,10 +30,14 @@ class VecFrameStack(VecEnvWrapper):
         self.stackedobs = np.roll(self.stackedobs, shift=-last_ax_size, axis=-1)
         for i, done in enumerate(dones):
             if done:
-                old_terminal = infos[i]['terminal_observation']
-                new_terminal = np.concatenate(
-                    (self.stackedobs[i, ..., :-last_ax_size], old_terminal), axis=-1)
-                infos[i]['terminal_observation'] = new_terminal
+                if 'terminal_observation' in infos[i]:
+                    old_terminal = infos[i]['terminal_observation']
+                    new_terminal = np.concatenate(
+                        (self.stackedobs[i, ..., :-last_ax_size], old_terminal), axis=-1)
+                    infos[i]['terminal_observation'] = new_terminal
+                else:
+                    warnings.warn(
+                        "VecFrameStack wrapping a vecenv without terminal_observation info")
                 self.stackedobs[i] = 0
         self.stackedobs[..., -observations.shape[-1]:] = observations
         return self.stackedobs, rewards, dones, infos
